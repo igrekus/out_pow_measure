@@ -66,13 +66,6 @@ class InstrumentController(QObject):
 
         self.result = MeasureResult()
 
-        self._freqs = list()
-        self._mag_s11s = list()
-        self._mag_s22s = list()
-        self._mag_s21s = list()
-        self._phs_s21s = list()
-        self._phase_values = list()
-
     def __str__(self):
         return f'{self._instruments}'
 
@@ -105,117 +98,42 @@ class InstrumentController(QObject):
     def measure(self, params):
         print(f'call measure with {params}')
         device, secondary = params
-        self.result.raw_data = self._measure(device, secondary)
-        self.hasResult = bool(self.result.raw_data)
+        self._measure(device, secondary)
+
+        # self.result.raw_data = self._measure(device, secondary)
+        # self.hasResult = bool(self.result.raw_data)
+
+        self.hasResult = True
 
     def _measure(self, device, secondary):
         param = self.deviceParams[device]
         secondary = self.secondaryParams
         print(f'launch measure with {param} {secondary}')
 
-        self._clear()
         self._init()
 
-        self._freqs = parse_float_list(self.read_freqs(chan=1, parameter='CH1_S21'))
+        if self._sweepType == 0:
+            self._run_pow_sweep(secondary)
+        elif self._sweepType == 1:
+            self._run_freq_sweep(secondary)
 
-        self._measure_s_params()
-
-        return self._freqs, self._mag_s11s, self._mag_s22s, self._mag_s21s, self._phs_s21s, self._phase_values
-
-    def _clear(self):
-        self._freqs = list()
-        self._mag_s11s = list()
-        self._mag_s22s = list()
-        self._mag_s21s = list()
-        self._phs_s21s = list()
-        self._phase_values = list()
+        return [1, 2]
 
     def _init(self):
-        pna = self._instruments['Анализатор']
-        prog = self._instruments['Программатор']
+        gen = self._instruments['Генератор']
+        meter = self._instruments['Измеритель мощности']
 
-        pna.send('SYST:PRES')
-        pna.query('*OPC?')
-        pna.send('CALC:PAR:DEL:ALL')
+        gen.send('SYST:PRES')
+        gen.query('*OPC?')
 
-        pna.send('DISP:WIND2 ON')
+        meter.send('SYST:PRES')
+        gen.query('*OPC?')
 
-        pna.send('CALC1:PAR:DEF "CH1_S21",S21')
-        pna.send('CALC2:PAR:DEF "CH2_S21",S21')
-        pna.send('CALC1:PAR:DEF "CH1_S11",S11')
-        pna.send('CALC1:PAR:DEF "CH1_S22",S22')
+    def _run_pow_sweep(self, params):
+        print('pow sweep', params)
 
-        # c:\program files\agilent\newtowrk analyzer\UserCalSets
-        # TODO calibration
-        # pna.send('SENS1:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
-        # pna.send('SENS2:CORR:CSET:ACT "-20dBm_1.1-1.4G",1')
-
-        # TODO point count
-        # pna.send(f'SENS1:SWE:POIN 201')
-        # pna.send(f'SENS2:SWE:POIN 201')
-
-        pna.send('DISP:WIND1:TRAC1:FEED "CH1_S21"')
-        pna.send('DISP:WIND2:TRAC1:FEED "CH2_S21"')
-        pna.send('DISP:WIND1:TRAC2:FEED "CH1_S11"')
-        pna.send('DISP:WIND1:TRAC3:FEED "CH1_S22"')
-
-        pna.send('SENS1:SWE:MODE CONT')
-        pna.send('SENS2:SWE:MODE CONT')
-
-        pna.send('CALC1:FORM MLOG')
-        pna.send('DISP:WIND1:TRAC1:Y:SCAL:AUTO')
-        pna.send('CALC2:FORM UPH')
-        pna.send('DISP:WIND2:TRAC1:Y:SCAL:AUTO')
-
-        pna.send(f'FORM:DATA ASCII')
-
-        prog.set_lpf_code(0)
-
-    def _measure_s_params(self):
-        prog = self._instruments['Программатор']
-
-        for state in self.states.values():
-            self._phase_values.append(self._phase_for_state(state))
-
-            prog.set_lpf_code(state)
-
-            if not is_mock:
-                time.sleep(0.1)
-
-            # TODO extract measurement class
-            self._mag_s21s.append(parse_float_list(self.read_measurement(chan=1, parameter='CH1_S21')))
-            self._phs_s21s.append(parse_float_list(self.read_measurement(chan=2, parameter='CH2_S21')))
-            self._mag_s11s.append(parse_float_list(self.read_measurement(chan=1, parameter='CH1_S11')))
-            self._mag_s22s.append(parse_float_list(self.read_measurement(chan=1, parameter='CH1_S22')))
-
-            if not is_mock:
-                time.sleep(0.1)
-
-    def _phase_for_state(self, pattern):
-        # TODO calculate phase by bit pattern
-        # return sum([ph * pt for ph, pt in zip(self.phases, pattern)])
-        return 42
-
-    def read_measurement(self, chan=1, parameter=''):
-        pna = self._instruments['Анализатор']
-        pna.send(f'CALC{chan}:PAR:SEL "{parameter}"')
-        pna.query('*OPC?')
-        return pna.query(f'CALC{chan}:DATA? FDATA')
-
-    def read_freqs(self, chan=1, parameter=''):
-        pna = self._instruments['Анализатор']
-        pna.send(f'CALC{chan}:PAR:SEL "{parameter}"')
-        pna.query(f'*OPC?')
-        return pna.query(f'SENS{chan}:X?')
-
-    def _export_to_xlsx(self, result):
-        print('exporting result')
-        # xslx_result(result)
-        # xlsx_result.save('out.xlsx')
-
-    def pow_sweep(self):
-        print('pow sweep')
-        return [4, 5, 6], [4, 5, 6]
+    def _run_freq_sweep(self, params):
+        print('freq sweep', params)
 
     @pyqtSlot(dict)
     def on_secondary_changed(self, params):
