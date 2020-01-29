@@ -128,11 +128,13 @@ class InstrumentController(QObject):
 
     def _run_pow_sweep(self, params):
         print('pow sweep', params)
-        return [1, 2]
+        res = [[params['F'], i + 1, i + 2] for i in range(10)]
+        return res
 
     def _run_freq_sweep(self, params):
         print('freq sweep', params)
-        return [1.0, 2.0]
+        res = [[params['P'], i + 1, i + 2] for i in range(10, 20)]
+        return res
 
     @pyqtSlot(dict)
     def on_secondary_changed(self, params):

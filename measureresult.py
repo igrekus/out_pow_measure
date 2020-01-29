@@ -20,7 +20,7 @@ class PowSweepResult(MeasureResult):
         self.process()
 
     def process(self):
-        self._processed_data = [[1, 1, 1, 1], [2, 1, 2, 2], [3, 1, 3, 3]]
+        self._processed_data = list(self._raw_data)
 
 
 class FreqSweepResult(MeasureResult):
@@ -31,4 +31,4 @@ class FreqSweepResult(MeasureResult):
         self.process()
 
     def process(self):
-        self._processed_data = [[1, 1, 'a', 'a'], [2, 1, 'b', 'b'], [3, 1, 'c', 'c']]
+        self._processed_data = list(self._raw_data)

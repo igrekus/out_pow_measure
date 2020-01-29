@@ -49,8 +49,11 @@ class MeasureModel(QAbstractTableModel):
         if not index.isValid():
             return QVariant()
         if role == Qt.DisplayRole:
-            try:
-                return QVariant(self._data[index.row()][index.column()])
-            except LookupError:
-                return QVariant()
+            row = index.row()
+            col = index.column()
+            if col == 0:
+                return QVariant(row + 1)
+            else:
+                return QVariant(self._data[row][col - 1])
+
         return QVariant()
