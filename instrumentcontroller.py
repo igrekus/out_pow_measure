@@ -1,9 +1,6 @@
-import time
-
 from os.path import isfile
 from PyQt5.QtCore import QObject, pyqtSlot
 
-from arduino.programmerfactory import ProgrammerFactory
 from instr.instrumentfactory import NetworkAnalyzerFactory, PowerMeterFactory
 from measureresult import MeasureResult
 
