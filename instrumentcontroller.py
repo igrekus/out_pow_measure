@@ -2,7 +2,7 @@ from os.path import isfile
 from PyQt5.QtCore import QObject, pyqtSlot
 
 from instr.instrumentfactory import NetworkAnalyzerFactory, PowerMeterFactory
-from measureresult import MeasureResult
+from measureresult import PowSweepResult, FreqSweepResult
 
 is_mock = True
 
@@ -97,7 +97,10 @@ class InstrumentController(QObject):
         device, secondary = params
 
         res = self._measure(device, secondary)
-        self.result = MeasureResult(res)
+        if self.sweepType == 0:
+            self.result = PowSweepResult(res)
+        else:
+            self.result = FreqSweepResult(res)
 
     def _measure(self, device, secondary):
         param = self.deviceParams[device]
@@ -107,11 +110,11 @@ class InstrumentController(QObject):
         self._init()
 
         if self._sweepType == 0:
-            self._run_pow_sweep(secondary)
-        elif self._sweepType == 1:
-            self._run_freq_sweep(secondary)
+            ret = self._run_pow_sweep(secondary)
+        else:
+            ret = self._run_freq_sweep(secondary)
 
-        return [1, 2]
+        return ret
 
     def _init(self):
         gen = self._instruments['Генератор']
@@ -125,9 +128,11 @@ class InstrumentController(QObject):
 
     def _run_pow_sweep(self, params):
         print('pow sweep', params)
+        return [1, 2]
 
     def _run_freq_sweep(self, params):
         print('freq sweep', params)
+        return [1.0, 2.0]
 
     @pyqtSlot(dict)
     def on_secondary_changed(self, params):
