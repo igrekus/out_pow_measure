@@ -67,7 +67,7 @@ class MeasureWidget(QWidget):
     def measureTaskComplete(self):
         print('measure complete')
         # TODO check if measure completed successfully?
-        if not self._controller.hasResult:
+        if not self._controller.result:
             print('error during measurement')
             return
 

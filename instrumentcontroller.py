@@ -64,7 +64,7 @@ class InstrumentController(QObject):
         self.present = False
         self.hasResult = False
 
-        self.result = MeasureResult()
+        self.result = None
 
     def __str__(self):
         return f'{self._instruments}'
@@ -89,7 +89,7 @@ class InstrumentController(QObject):
 
     def _check(self, device, secondary):
         print(f'launch check with {self.deviceParams[device]} {self.secondaryParams}')
-        return self.result.init() and self._runCheck(self.deviceParams[device], self.secondaryParams)
+        return self._runCheck(self.deviceParams[device], self.secondaryParams)
 
     def _runCheck(self, param, secondary):
         print(f'run check with {param}, {secondary}')
@@ -98,12 +98,9 @@ class InstrumentController(QObject):
     def measure(self, params):
         print(f'call measure with {params}')
         device, secondary = params
-        self._measure(device, secondary)
 
-        # self.result.raw_data = self._measure(device, secondary)
-        # self.hasResult = bool(self.result.raw_data)
-
-        self.hasResult = True
+        res = self._measure(device, secondary)
+        self.result = MeasureResult(res)
 
     def _measure(self, device, secondary):
         param = self.deviceParams[device]

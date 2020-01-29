@@ -17,7 +17,8 @@ class MeasureModel(QAbstractTableModel):
 
     def _initHeader(self):
         self.beginResetModel()
-        self._headers = self._controller.result.headers
+        if self._controller.result:
+            self._headers = self._controller.result.headers
         self.endResetModel()
 
     def update(self):
