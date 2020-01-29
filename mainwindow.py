@@ -11,10 +11,6 @@ from primaryplotwidget import PrimaryPlotWidget
 
 class MainWindow(QMainWindow):
 
-    instrumentsFound = pyqtSignal()
-    sampleFound = pyqtSignal()
-    measurementFinished = pyqtSignal()
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
