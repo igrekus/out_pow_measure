@@ -7,6 +7,10 @@ class MeasureResult:
     def process(self):
         raise NotImplementedError
 
+    @property
+    def data(self):
+        return self._processed_data
+
 
 class PowSweepResult(MeasureResult):
     def __init__(self, raw_data):

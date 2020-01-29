@@ -46,7 +46,8 @@ class MainWindow(QMainWindow):
         self._measureWidget.measureComplete.connect(self._measureModel.update)
         self._measureWidget.measureComplete.connect(self.on_measureComplete)
 
-        # self._ui.tableMeasure.setModel(self._measureModel)
+        self._powSweepWidget.tabResult.setModel(self._measureModel)
+        self._freqSweepWidget.tabResult.setModel(self._measureModel)
 
         self.refreshView()
 

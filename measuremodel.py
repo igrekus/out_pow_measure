@@ -24,7 +24,7 @@ class MeasureModel(QAbstractTableModel):
     def update(self):
         self._init()
         self.beginResetModel()
-        # self._data = self._controller.result.data
+        self._data = self._controller.result.data
         self.endResetModel()
 
     def headerData(self, section, orientation, role=None):
@@ -37,7 +37,10 @@ class MeasureModel(QAbstractTableModel):
     def rowCount(self, parent=None, *args, **kwargs):
         if parent.isValid():
             return 0
-        return 1
+        try:
+            return len(self._controller.result.data)
+        except AttributeError:
+            return 0
 
     def columnCount(self, parent=None, *args, **kwargs):
         return len(self._headers)
@@ -47,7 +50,7 @@ class MeasureModel(QAbstractTableModel):
             return QVariant()
         if role == Qt.DisplayRole:
             try:
-                return QVariant(self._data[index.column()])
+                return QVariant(self._data[index.row()][index.column()])
             except LookupError:
                 return QVariant()
         return QVariant()
