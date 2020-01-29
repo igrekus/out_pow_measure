@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self._ui.layInstrs.insertWidget(1, self._measureWidget)
         self._ui.tabWidget.insertTab(0, self._powSweepWidget, 'По мощности')
         self._ui.tabWidget.insertTab(1, self._freqSweepWidget, 'По частоте')
+        self._ui.tabWidget.setCurrentIndex(0)
 
         self._init()
 
@@ -69,4 +70,8 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def on_measureComplete(self):
         print('meas complete')
-        self._plotWidget.plot()
+        # self._plotWidget.plot()
+
+    @pyqtSlot(int)
+    def on_tabWidget_currentChanged(self, index):
+        self._instrumentController.secondaryParams = self._ui.tabWidget.currentWidget().params

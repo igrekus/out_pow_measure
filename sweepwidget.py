@@ -1,6 +1,11 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
 
+G = 1_000_000_000
+M = 1_000_000
+K = 1_000
+
+GHz = G
 
 def make_sweep_widget(which='pow', parent=None, controller=None):
     if which == 'pow':
@@ -15,6 +20,10 @@ class SweepWidget(QWidget):
 
         self._ui = uic.loadUi('sweepwidget.ui', self)
         self._controller = controller
+
+    @property
+    def params(self):
+        raise NotImplementedError
 
 
 class PowSweepWidget(SweepWidget):
@@ -45,6 +54,15 @@ class PowSweepWidget(SweepWidget):
         self._ui.spinSecStep.setMaximum(10)
         self._ui.spinSecStep.setValue(0.1)
 
+    @property
+    def params(self):
+        return {
+            'F': self._ui.spinParam.value() * GHz,
+            'Pmin': self._ui.spinSecMin.value(),
+            'Pmax': self._ui.spinSecMax.value(),
+            'Pstep': self._ui.spinSecStep.value()
+        }
+
 
 class FreqSweepWidget(SweepWidget):
     def __init__(self, parent=None, controller=None):
@@ -74,3 +92,11 @@ class FreqSweepWidget(SweepWidget):
         self._ui.spinSecStep.setMaximum(10)
         self._ui.spinSecStep.setValue(0.1)
 
+    @property
+    def params(self):
+        return {
+            'P': self._ui.spinParam.value(),
+            'Fmin': self._ui.spinSecMin.value() * GHz,
+            'Fmax': self._ui.spinSecMax.value() * GHz,
+            'Fstep': self._ui.spinSecStep.value() * GHz
+        }

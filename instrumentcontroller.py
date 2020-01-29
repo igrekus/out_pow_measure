@@ -49,11 +49,13 @@ class InstrumentController(QObject):
                 self.deviceParams = ast.literal_eval(raw)
 
         self.secondaryParams = {
-            'Pin': -10,
-            'F1': 4,
-            'F2': 8,
-            'State': 0
+            'F': 1.0,
+            'Pmin': -20.0,
+            'Pmax': 0,
+            'Pstep': 0.1
         }
+
+        self._sweepType = 0
 
         self.span = 0.1
 
@@ -222,6 +224,14 @@ class InstrumentController(QObject):
     @property
     def status(self):
         return [i.status for i in self._instruments.values()]
+
+    @property
+    def sweepType(self):
+        return self._sweepType
+
+    @sweepType.setter
+    def sweepType(self, value):
+        self._sweepType = value
 
 
 def parse_float_list(lst):
