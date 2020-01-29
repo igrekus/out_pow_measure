@@ -7,6 +7,7 @@ from connectionwidget import ConnectionWidget
 from measuremodel import MeasureModel
 from measurewidget import MeasureWidgetWithSecondaryParameters
 from primaryplotwidget import PrimaryPlotWidget
+from sweepwidget import SweepWidget, make_sweep_widget
 
 
 class MainWindow(QMainWindow):
@@ -22,11 +23,16 @@ class MainWindow(QMainWindow):
         self._instrumentController = InstrumentController(parent=self)
         self._connectionWidget = ConnectionWidget(parent=self, controller=self._instrumentController)
         self._measureWidget = MeasureWidgetWithSecondaryParameters(parent=self, controller=self._instrumentController)
+        self._powSweepWidget = make_sweep_widget('pow', parent=self, controller=self._instrumentController)
+        self._freqSweepWidget = make_sweep_widget('freq', parent=self, controller=self._instrumentController)
+
         self._measureModel = MeasureModel(parent=self, controller=self._instrumentController)
 
         # init UI
         self._ui.layInstrs.insertWidget(0, self._connectionWidget)
         self._ui.layInstrs.insertWidget(1, self._measureWidget)
+        self._ui.tabWidget.insertTab(0, self._powSweepWidget, 'По мощности')
+        self._ui.tabWidget.insertTab(1, self._freqSweepWidget, 'По частоте')
 
         self._init()
 
