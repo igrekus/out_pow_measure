@@ -74,4 +74,5 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(int)
     def on_tabWidget_currentChanged(self, index):
+        self._instrumentController.sweepType = index
         self._instrumentController.secondaryParams = self._ui.tabWidget.currentWidget().params
