@@ -28,10 +28,8 @@ class MeasureModel(QAbstractTableModel):
         self.endResetModel()
 
     def headerData(self, section, orientation, role=None):
-        if orientation == Qt.Horizontal:
-            if role == Qt.DisplayRole:
-                if section < len(self._headers):
-                    return QVariant(self._headers[section])
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole and section < len(self._headers):
+            return QVariant(self._headers[section])
         return QVariant()
 
     def rowCount(self, parent=None, *args, **kwargs):
