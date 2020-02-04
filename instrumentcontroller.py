@@ -145,7 +145,7 @@ class InstrumentController(QObject):
         p_in = list()
         for pwr in self._range(params['Pmin'], params['Pmax'], params['Pstep']):
             gen.set_pow(value=pwr, unit='dB')
-            time.sleep(0.2)
+            time.sleep(1)
             meter.send('ABORT')
             meter.send('INIT')
             p_out.append(meter.query('FETCH?'))
@@ -168,7 +168,7 @@ class InstrumentController(QObject):
         for frq in self._range(params['Fmin'], params['Fmax'], params['Fstep']):
             gen.set_freq(value=frq, unit='Hz')
             meter.send(f'SENSe1:FREQuency {frq}')
-            time.sleep(0.2)
+            time.sleep(1)
             meter.send('ABORT')
             meter.send('INIT')
             p_out.append(meter.query('FETCH?'))
