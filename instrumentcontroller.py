@@ -151,7 +151,7 @@ class InstrumentController(QObject):
             p_out.append(meter.query('FETCH?'))
             p_in.append(pwr)
 
-        return [[freq, i, o] for i, o in zip(p_in, p_out)]
+        return [[freq, i, round(float(o), 2)] for i, o in zip(p_in, p_out)]
 
     def _run_freq_sweep(self, params):
         print('freq sweep', params)
@@ -174,7 +174,7 @@ class InstrumentController(QObject):
             p_out.append(meter.query('FETCH?'))
             f_in.append(frq)
 
-        return [[pwr, i, o] for i, o in zip(f_in, p_out)]
+        return [[pwr, i, round(float(o), 2)] for i, o in zip(f_in, p_out)]
 
     def _range(self, start, end, step):
         return [start + i * step for i in range(int((end - start) / step) + 1)]
