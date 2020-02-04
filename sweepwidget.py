@@ -68,7 +68,8 @@ class PowSweepWidget(SweepWidget):
             'F': self._ui.spinParam.value() * GHz,
             'Pmin': self._ui.spinSecMin.value(),
             'Pmax': self._ui.spinSecMax.value(),
-            'Pstep': self._ui.spinSecStep.value()
+            'Pstep': self._ui.spinSecStep.value(),
+            'file': self._ui.editFile.text()
         }
 
 
@@ -107,6 +108,7 @@ class FreqSweepWidget(SweepWidget):
             'P': self._ui.spinParam.value(),
             'Fmin': self._ui.spinSecMin.value() * GHz,
             'Fmax': self._ui.spinSecMax.value() * GHz,
-            'Fstep': self._ui.spinSecStep.value() * GHz
+            'Fstep': self._ui.spinSecStep.value() * GHz,
+            'file': self._ui.editFile.text()
         }
 

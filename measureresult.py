@@ -4,8 +4,8 @@ import openpyxl
 
 
 class MeasureResult:
-    def __init__(self, raw_data):
-        self._xlsx_fn = 'abs'
+    def __init__(self, raw_data, suffix=''):
+        self._xlsx_fn = suffix
         self._title_str = 'abs title'
         self._raw_data = raw_data
         self.headers = list()
@@ -35,9 +35,8 @@ class MeasureResult:
 
 
 class PowSweepResult(MeasureResult):
-    def __init__(self, raw_data):
-        super().__init__(raw_data)
-        self._xlsx_fn = 'pow_sweep'
+    def __init__(self, raw_data, suffix=''):
+        super().__init__(raw_data, suffix=suffix)
         self.headers = ['#', 'F', 'Pвх, дБ', 'Pвых, дБ']
 
         self.process()
@@ -50,9 +49,8 @@ class PowSweepResult(MeasureResult):
 
 
 class FreqSweepResult(MeasureResult):
-    def __init__(self, raw_data):
-        super().__init__(raw_data)
-        self._xlsx_fn = 'freq_sweep'
+    def __init__(self, raw_data, suffix=''):
+        super().__init__(raw_data, suffix=suffix)
         self.headers = ['#', 'Pвх', 'F, ГГц', 'Pвых, дБ']
 
         self.process()

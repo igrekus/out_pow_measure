@@ -99,9 +99,9 @@ class InstrumentController(QObject):
 
         res = self._measure(device, secondary)
         if self.sweepType == 0:
-            self.result = PowSweepResult(res)
+            self.result = PowSweepResult(res, self.secondaryParams['file'])
         else:
-            self.result = FreqSweepResult(res)
+            self.result = FreqSweepResult(res, self.secondaryParams['file'])
 
     def _measure(self, device, secondary):
         param = self.deviceParams[device]
