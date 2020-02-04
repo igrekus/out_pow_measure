@@ -62,6 +62,7 @@ class PowSweepWidget(SweepWidget):
         self._ui.spinParam.setMinimum(0)
         self._ui.spinParam.setMaximum(50)
         self._ui.spinParam.setValue(1)
+        self._ui.spinParam.setSingleStep(0.1)
 
         self._ui.lblSecMin.setText('Pмин=')
         self._ui.spinSecMin.setSuffix(' дБ')
@@ -102,6 +103,7 @@ class FreqSweepWidget(SweepWidget):
         self._ui.spinParam.setMinimum(-30)
         self._ui.spinParam.setMaximum(50)
         self._ui.spinParam.setValue(-20)
+        self._ui.spinParam.setSingleStep(0.1)
 
         self._ui.lblSecMin.setText('Fмин=')
         self._ui.spinSecMin.setSuffix(' ГГц')
