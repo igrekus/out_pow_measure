@@ -1,5 +1,5 @@
+import os
 import datetime
-
 import openpyxl
 
 
@@ -31,7 +31,11 @@ class MeasureResult:
         for i, row in enumerate(self.data):
             ws.append([i + 1] + row[1:])
 
-        wb.save(self.xlsx_filename)
+        if not os.path.isdir('xlsx'):
+            os.mkdir('xlsx')
+
+        wb.save(f'xlsx\\{self.xlsx_filename}')
+        os.startfile('xlsx')
 
 
 class PowSweepResult(MeasureResult):
