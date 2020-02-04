@@ -46,6 +46,9 @@ class MainWindow(QMainWindow):
         self._measureWidget.measureComplete.connect(self._measureModel.update)
         self._measureWidget.measureComplete.connect(self.on_measureComplete)
 
+        self._powSweepWidget.paramsChanged.connect(self.on_paramsChanged)
+        self._freqSweepWidget.paramsChanged.connect(self.on_paramsChanged)
+
         self._powSweepWidget.tabResult.setModel(self._measureModel)
         self._freqSweepWidget.tabResult.setModel(self._measureModel)
 
@@ -76,4 +79,8 @@ class MainWindow(QMainWindow):
     @pyqtSlot(int)
     def on_tabWidget_currentChanged(self, index):
         self._instrumentController.sweepType = index
+        self._instrumentController.secondaryParams = self._ui.tabWidget.currentWidget().params
+
+    @pyqtSlot()
+    def on_paramsChanged(self):
         self._instrumentController.secondaryParams = self._ui.tabWidget.currentWidget().params

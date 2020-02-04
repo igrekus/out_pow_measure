@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 G = 1_000_000_000
@@ -17,6 +17,8 @@ def make_sweep_widget(which='pow', parent=None, controller=None):
 
 
 class SweepWidget(QWidget):
+    paramsChanged = pyqtSignal()
+
     def __init__(self, parent=None, controller=None):
         super().__init__(parent=parent)
 
@@ -30,7 +32,24 @@ class SweepWidget(QWidget):
 
     @pyqtSlot(float)
     def on_spinParam_valueChanged(self, value):
-        self._ui.editFile.setText(f'{value}_{self._labelUnit}')
+        self._ui.editFile.setText(f'{value:.01f}{self._labelUnit}')
+        self.paramsChanged.emit()
+
+    @pyqtSlot(float)
+    def on_spinSecMin_valueChanged(self, value):
+        self.paramsChanged.emit()
+
+    @pyqtSlot(float)
+    def on_spinSecMax_valueChanged(self, value):
+        self.paramsChanged.emit()
+
+    @pyqtSlot(float)
+    def on_spinSecStep_valueChanged(self, value):
+        self.paramsChanged.emit()
+
+    @pyqtSlot(str)
+    def on_editFile_textEdited(self, text):
+        self.paramsChanged.emit()
 
 
 class PowSweepWidget(SweepWidget):
