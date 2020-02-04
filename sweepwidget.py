@@ -40,7 +40,7 @@ class PowSweepWidget(SweepWidget):
         self._ui.spinSecMin.setSuffix(' дБ')
         self._ui.spinSecMin.setMinimum(-30)
         self._ui.spinSecMin.setMaximum(20)
-        self._ui.spinSecMin.setValue(-20)
+        self._ui.spinSecMin.setValue(-10)
 
         self._ui.lblSecMax.setText('Pмакс=')
         self._ui.spinSecMax.setSuffix(' дБ')
@@ -52,7 +52,7 @@ class PowSweepWidget(SweepWidget):
         self._ui.spinSecStep.setSuffix(' дБ')
         self._ui.spinSecStep.setMinimum(0)
         self._ui.spinSecStep.setMaximum(10)
-        self._ui.spinSecStep.setValue(0.1)
+        self._ui.spinSecStep.setValue(1)
 
     @property
     def params(self):
@@ -67,6 +67,7 @@ class PowSweepWidget(SweepWidget):
 class FreqSweepWidget(SweepWidget):
     def __init__(self, parent=None, controller=None):
         super().__init__(parent=parent, controller=controller)
+        self._labelUnit = 'дБ'
 
         self._ui.lblParam.setText('P=')
         self._ui.spinParam.setSuffix(' дБ')
@@ -90,7 +91,7 @@ class FreqSweepWidget(SweepWidget):
         self._ui.spinSecStep.setSuffix(' ГГц')
         self._ui.spinSecStep.setMinimum(0)
         self._ui.spinSecStep.setMaximum(10)
-        self._ui.spinSecStep.setValue(0.1)
+        self._ui.spinSecStep.setValue(0.5)
 
     @property
     def params(self):
