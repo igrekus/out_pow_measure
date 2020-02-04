@@ -2,7 +2,7 @@ import time
 from os.path import isfile
 from PyQt5.QtCore import QObject, pyqtSlot
 
-from instr.instrumentfactory import NetworkAnalyzerFactory, PowerMeterFactory
+from instr.instrumentfactory import PowerMeterFactory, GeneratorFactory
 from measureresult import PowSweepResult, FreqSweepResult
 
 is_mock = True
