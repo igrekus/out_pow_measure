@@ -1,4 +1,5 @@
 from PyQt5 import uic
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QWidget
 
 G = 1_000_000_000
@@ -6,6 +7,7 @@ M = 1_000_000
 K = 1_000
 
 GHz = G
+
 
 def make_sweep_widget(which='pow', parent=None, controller=None):
     if which == 'pow':
@@ -20,15 +22,21 @@ class SweepWidget(QWidget):
 
         self._ui = uic.loadUi('sweepwidget.ui', self)
         self._controller = controller
+        self._labelUnit = ''
 
     @property
     def params(self):
         raise NotImplementedError
 
+    @pyqtSlot(float)
+    def on_spinParam_valueChanged(self, value):
+        self._ui.editFile.setText(f'{value}_{self._labelUnit}')
+
 
 class PowSweepWidget(SweepWidget):
     def __init__(self, parent=None, controller=None):
         super().__init__(parent=parent, controller=controller)
+        self._labelUnit = 'ГГц'
 
         self._ui.lblParam.setText('F=')
         self._ui.spinParam.setSuffix(' ГГц')
