@@ -24,8 +24,8 @@ class InstrumentController(QObject):
         super().__init__(parent=parent)
 
         self.requiredInstruments = {
-            'Генератор': NetworkAnalyzerFactory('GPIB2::18::INSTR'),
-            'Измеритель мощности': PowerMeterFactory('GPIB2::10::INSTR')
+            'Генератор': GeneratorFactory('GPIB0::20::INSTR'),
+            'Измеритель мощности': PowerMeterFactory('GPIB0::1::INSTR')
         }
 
         self.deviceParams = {
