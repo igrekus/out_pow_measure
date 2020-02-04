@@ -1,3 +1,4 @@
+import time
 from os.path import isfile
 from PyQt5.QtCore import QObject, pyqtSlot
 
@@ -114,6 +115,7 @@ class InstrumentController(QObject):
         else:
             ret = self._run_freq_sweep(secondary)
 
+        self._instruments['Генератор'].set_output(state='OFF')
         return ret
 
     def _init(self):
@@ -124,17 +126,58 @@ class InstrumentController(QObject):
         gen.query('*OPC?')
 
         meter.send('SYST:PRES')
-        gen.query('*OPC?')
+        meter.query('*OPC?')
+        meter.send('SENSe1:AVERage ON')
+        meter.send('SENSe:AVERage:COUNt 10')
+        meter.send('FORMat ASCII')
 
     def _run_pow_sweep(self, params):
         print('pow sweep', params)
-        res = [[params['F'], i + 1, i + 2] for i in range(10)]
-        return res
+        gen = self._instruments['Генератор']
+        meter = self._instruments['Измеритель мощности']
+
+        freq = params['F']
+        meter.send(f'SENSe1:FREQuency {freq}')
+        gen.set_freq(value=freq, unit='Hz')
+        gen.set_output(state='ON')
+
+        p_out = list()
+        p_in = list()
+        for pwr in self._range(params['Pmin'], params['Pmax'], params['Pstep']):
+            gen.set_pow(value=pwr, unit='dB')
+            time.sleep(0.2)
+            meter.send('ABORT')
+            meter.send('INIT')
+            p_out.append(meter.query('FETCH?'))
+            p_in.append(pwr)
+
+        return [[freq, i, o] for i, o in zip(p_in, p_out)]
 
     def _run_freq_sweep(self, params):
         print('freq sweep', params)
-        res = [[params['P'], i + 1, i + 2] for i in range(10, 20)]
-        return res
+
+        gen = self._instruments['Генератор']
+        meter = self._instruments['Измеритель мощности']
+
+        pwr = params['P']
+        gen.set_pow(value=pwr, unit='dB')
+        gen.set_output(state='ON')
+
+        p_out = list()
+        f_in = list()
+        for frq in self._range(params['Fmin'], params['Fmax'], params['Fstep']):
+            gen.set_freq(value=frq, unit='Hz')
+            meter.send(f'SENSe1:FREQuency {frq}')
+            time.sleep(0.2)
+            meter.send('ABORT')
+            meter.send('INIT')
+            p_out.append(meter.query('FETCH?'))
+            f_in.append(frq)
+
+        return [[pwr, i, o] for i, o in zip(f_in, p_out)]
+
+    def _range(self, start, end, step):
+        return [start + i * step for i in range(int((end - start) / step) + 1)]
 
     @pyqtSlot(dict)
     def on_secondary_changed(self, params):
