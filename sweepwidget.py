@@ -109,3 +109,4 @@ class FreqSweepWidget(SweepWidget):
             'Fmax': self._ui.spinSecMax.value() * GHz,
             'Fstep': self._ui.spinSecStep.value() * GHz
         }
+
