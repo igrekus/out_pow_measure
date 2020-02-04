@@ -1,9 +1,12 @@
 import datetime
 
+import openpyxl
+
 
 class MeasureResult:
     def __init__(self, raw_data):
         self._xlsx_fn = 'abs'
+        self._title_str = 'abs title'
         self._raw_data = raw_data
         self.headers = list()
         self._processed_data = list()
@@ -17,27 +20,46 @@ class MeasureResult:
 
     @property
     def xlsx_filename(self):
-        return f'{self._xlsx_fn}_{datetime.datetime.now().isoformat()}.xlsx'
+        return f'{self._xlsx_fn}_{datetime.datetime.now().isoformat().replace(":","-")}.xlsx'
+
+    def save_xlsx(self):
+        wb = openpyxl.Workbook()
+        ws = wb.active
+
+        ws.append([self.headers[0]] + self.headers[2:])
+        ws.append([self._title_str])
+        for i, row in enumerate(self.data):
+            ws.append([i + 1] + row[1:])
+
+        wb.save(self.xlsx_filename)
+
 
 class PowSweepResult(MeasureResult):
     def __init__(self, raw_data):
         super().__init__(raw_data)
         self._xlsx_fn = 'pow_sweep'
-        self.headers = ['#', 'F', 'Pвх', 'Pвых']
+        self.headers = ['#', 'F', 'Pвх, дБ', 'Pвых, дБ']
 
         self.process()
+        self.save_xlsx()
 
     def process(self):
+        print(self.xlsx_filename)
         self._processed_data = list(self._raw_data)
+        self._title_str = f'F = {self.data[0][0] / 1_000_000_000} ГГц'
 
 
 class FreqSweepResult(MeasureResult):
     def __init__(self, raw_data):
         super().__init__(raw_data)
         self._xlsx_fn = 'freq_sweep'
-        self.headers = ['#', 'Pвх', 'F', 'Pвых']
+        self.headers = ['#', 'Pвх', 'F, ГГц', 'Pвых, дБ']
 
         self.process()
+        self.save_xlsx()
 
     def process(self):
+        print(self.xlsx_filename)
         self._processed_data = list(self._raw_data)
+        self._title_str = f'P = {self.data[0][0]} дБ'
+
